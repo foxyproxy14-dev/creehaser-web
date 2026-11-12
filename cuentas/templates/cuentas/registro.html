@@ -1,0 +1,23 @@
+{% extends "cuentas/_base_auth.html" %}
+{% block titulo %}Crear cuenta · {{ block.super }}{% endblock %}
+{% block caja %}
+<h2>Crea tu cuenta de padrino 🎁</h2>
+<p class="muted">Con tu cuenta eliges regalos, conoces a los niños que te toquen y ves todo en tu panel.</p>
+<form method="post" novalidate>{% csrf_token %}
+  <input type="hidden" name="next" value="{{ next }}">
+  {% for e in form.non_field_errors %}<div class="ferr" style="display:block">{{ e }}</div>{% endfor %}
+  <div class="form-grid">
+    <div>{% include "partials/campo.html" with campo=form.first_name %}</div>
+    <div>{% include "partials/campo.html" with campo=form.last_name %}</div>
+  </div>
+  {% include "partials/campo.html" with campo=form.email %}
+  {% include "partials/campo.html" with campo=form.telefono %}
+  <div class="form-grid">
+    <div>{% include "partials/campo.html" with campo=form.password1 %}</div>
+    <div>{% include "partials/campo.html" with campo=form.password2 %}</div>
+  </div>
+  {% include "partials/campo.html" with campo=form.acepto %}
+  <div class="actions"><button class="btn btn-teal" type="submit">Crear cuenta y continuar</button></div>
+</form>
+<p class="small muted" style="text-align:center">¿Ya tienes cuenta? <a href="{% url 'ingresar' %}{% if next %}?next={{ next|urlencode }}{% endif %}">Inicia sesión</a></p>
+{% endblock %}

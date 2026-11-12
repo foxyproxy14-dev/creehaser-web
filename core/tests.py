@@ -75,10 +75,6 @@ class PortalTest(TestCase):
         self.assertEqual(ConfiguracionSitio.objects.count(), 1)
         self.assertContains(self.client.get("/"), 'data-deco="off"')
 
-    def test_paginas_proximamente(self):
-        self.assertContains(self.client.get("/arbol/"), "El Árbol de la Navidad")
-        self.assertContains(self.client.get("/mi-panel/"), "Mi panel de padrino")
-
     def test_enlace_panel_solo_para_organizadores(self):
         self.assertNotContains(self.client.get("/"), "⚙️ Panel fundación")
         u = get_user_model().objects.create_user("org@creehaser.org", "clave-segura-123", es_organizador=True)

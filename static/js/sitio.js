@@ -138,6 +138,8 @@
     svg.innerHTML = g + "</g>";
   }
 
+  window.CreeArbol = { baseArbol, posiciones, colores: COLORES_REGALO };
+
   /* ---------- Menú de secciones ---------- */
   const cabecera = $("header.top"), subnav = $("#subnav");
   function altoCabecera() { document.documentElement.style.setProperty("--hh", cabecera.offsetHeight + "px"); }

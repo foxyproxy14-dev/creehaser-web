@@ -1,0 +1,6 @@
+{% extends "cuentas/_base_auth.html" %}
+{% block caja %}
+<h2>📧 Revisa tu correo</h2>
+<p>Si hay una cuenta con ese correo, te llegará un enlace para crear una contraseña nueva. Revisa también la carpeta de spam.</p>
+<p style="text-align:center"><a class="btn btn-teal" href="{% url 'ingresar' %}">Volver a iniciar sesión</a></p>
+{% endblock %}

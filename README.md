@@ -12,7 +12,7 @@ fundación gestiona todo desde su panel.
 | Prototipo visual (`prototipo/`) | ✅ Validado con la fundación |
 | Parte 1 · Base: Django, PostgreSQL, Docker, modelos y admin | ✅ |
 | Parte 2 · Portal de la fundación (contenido editable) | ✅ |
-| Parte 3 · Árbol, cuentas y panel de padrino | ⏳ |
+| Parte 3 · Árbol, cuentas y panel de padrino | ✅ |
 | Parte 4 · Panel de organizadores, Telegram y correos | ⏳ |
 
 ### Prototipo

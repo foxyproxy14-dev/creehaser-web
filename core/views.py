@@ -43,16 +43,6 @@ def inicio(request):
     return render(request, "core/inicio.html", ctx)
 
 
-def proximamente(request, seccion):
-    titulos = {
-        "arbol": ("🎄 El Árbol de la Navidad", "Muy pronto podrás elegir regalos y conocer a los niños que te toquen."),
-        "mi-panel": ("Mi panel de padrino", "Muy pronto podrás crear tu cuenta y ver aquí a tus niños asignados."),
-    }
-    titulo, texto = titulos.get(seccion, ("Muy pronto", ""))
-    return render(request, "core/proximamente.html", {"titulo": titulo, "texto": texto,
-                                                      "arbol": _resumen_arbol(_evento_activo())})
-
-
 def salud(request):
     """Comprobación para el proxy o un monitor: responde 200 si la app y la base de datos están bien."""
     try:

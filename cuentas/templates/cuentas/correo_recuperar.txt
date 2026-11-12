@@ -1,0 +1,10 @@
+Hola {{ user.first_name|default:"" }},
+
+Recibimos una solicitud para cambiar la contraseña de tu cuenta en la web de la Fundación CreeHaSer.
+Para crear una nueva, abre este enlace (dura 24 horas):
+
+{{ protocol }}://{{ domain }}{% url 'nueva_clave' uidb64=uid token=token %}
+
+Si no lo pediste tú, ignora este correo: tu contraseña sigue igual.
+
+Fundación CreeHaSer · Creer y Hacer hacen el Ser

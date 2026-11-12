@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block titulo %}¡Conoce a tus niños! · {{ block.super }}{% endblock %}
+{% block intro %}{% endblock %}
+{% block contenido %}
+<section class="pagina"><div class="wrap" style="max-width:960px">
+  <div class="card" style="text-align:center;padding:30px">
+    <div class="reveal-stage" id="rstage" style="height:170px"><div class="rbox" id="rbox"><div class="b"></div><div class="l"></div></div>
+      <div class="confetti">{% for i in "012345678901234567890123456789" %}<i style="background:{% cycle '#d6312f' '#e0559a' '#2a7fcf' '#f28c28' '#9b7fd1' '#11807a' %};--dx:{% cycle '160px' '-150px' '90px' '-80px' '200px' '-190px' '40px' '-30px' '130px' '-120px' %};--dy:{% cycle '-120px' '-90px' '60px' '-140px' '20px' '-40px' '80px' '-110px' %};animation-delay:{% cycle '0s' '.05s' '.1s' '.15s' %}"></i>{% endfor %}</div>
+    </div>
+    <div class="kid-card" id="kcard">
+      <p class="muted" style="margin:0">{% if ninos|length > 1 %}¡Conoce a los {{ ninos|length }} niños que te tocaron!{% else %}¡Conoce al niño que te tocó!{% endif %}</p>
+      <h2 style="margin:6px 0 4px;color:var(--teal-d)">🎄 Tus regalos son para…</h2>
+      <div class="reveal-grid">
+        {% for n in ninos %}
+        <div class="rcard" style="animation-delay:{% widthratio forloop.counter0 1 15 %}0ms">
+          <div style="display:flex;justify-content:center">{% include "campana/_avatar.html" with n=n tam=110 %}</div>
+          <h4>{{ n.nombre }}</h4>
+          <div class="meta">{{ n.get_sexo_display }} · {{ n.edad }} años{% if n.estatura_cm %} · {{ n.estatura_m }}{% endif %}</div>
+          <div class="kv"><b>Le gusta</b><span>{{ n.gustos|default:"—" }}</span><b>Le gustaría</b><span>{{ n.regalo_deseado|default:"—" }}</span></div>
+        </div>
+        {% endfor %}
+      </div>
+      <div class="info" style="text-align:left">💡 En tu panel puedes indicar qué le vas a regalar a cada uno: lo que pidió u otra cosa relacionada con lo que le gusta.</div>
+      {% if evento.instrucciones_entrega %}<div class="info" style="text-align:left">📦 <b>Cómo entregar {% if ninos|length > 1 %}los regalos{% else %}el regalo{% endif %}:</b> mínimo {{ evento.monto_minimo|floatformat:"0" }} $ por niño.<br>{{ evento.instrucciones_entrega|linebreaksbr }}</div>{% endif %}
+      <div class="actions" style="justify-content:center"><a class="btn btn-teal" href="{% url 'mi_panel' %}">Ir a mi panel de padrino</a><a class="btn btn-ghost" href="{% url 'arbol' %}">Volver al árbol</a></div>
+    </div>
+  </div>
+</div></section>
+{% endblock %}
+{% block scripts %}
+<script>
+  setTimeout(function(){var b=document.getElementById('rbox');b&&b.classList.add('open')},350);
+  setTimeout(function(){document.getElementById('rstage').style.display='none';document.getElementById('kcard').classList.add('on')},1150);
+</script>
+{% endblock %}

@@ -99,6 +99,20 @@ git pull
 docker compose up -d --build
 ```
 
+## Correo (recuperar contraseña)
+
+Sin configurar correo, los enlaces de «¿Olvidaste tu contraseña?» solo quedan en el registro
+(`docker compose logs web`). Para enviarlos de verdad, rellena en el `.env` la sección de correo
+(por ejemplo con Brevo, gratis hasta 300 correos/día) y reinicia: `docker compose up -d`.
+
+## Avisos por Telegram
+
+1. En Telegram, habla con **@BotFather** → `/newbot` → copia el *token*.
+2. Crea un grupo con los organizadores y agrega el bot.
+3. Escribe cualquier mensaje en el grupo y abre `https://api.telegram.org/bot<TOKEN>/getUpdates`:
+   el número `"chat":{"id":-100...}` es el `TELEGRAM_CHAT_ID`.
+4. Pon ambos en el `.env` y reinicia: `docker compose up -d`.
+
 ## Comandos útiles
 
 | Para… | Comando |
