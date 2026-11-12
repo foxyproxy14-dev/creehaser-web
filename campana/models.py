@@ -44,6 +44,13 @@ class Fundacion(models.Model):
     longitud = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
     sitio_web = models.URLField(blank=True)
     logo = models.ImageField(upload_to=ruta_logo, blank=True)
+    # Textos del portal
+    frase = models.CharField("frase destacada", max_length=200, blank=True,
+                             help_text="Ej.: «Transformamos vidas desde el amor y la educación emocional».")
+    adn_subtitulo = models.CharField("subtítulo de «Nuestro ADN»", max_length=200, blank=True)
+    mision = models.TextField("misión", blank=True)
+    esencia = models.TextField(blank=True)
+    vision = models.TextField("visión", blank=True)
     activa = models.BooleanField(default=True)
     creada = models.DateTimeField(auto_now_add=True)
 

@@ -1,20 +1,56 @@
 from django.db import connection
+from django.db.models import Count, Prefetch, Q
 from django.http import JsonResponse
 from django.shortcuts import render
 
-from campana.models import Evento, Fundacion, Nino
+from campana.models import Evento, Nino
+
+from .models import FotoEventoDestacado
+
+
+def _evento_activo():
+    return Evento.objects.filter(activo=True).select_related("fundacion").order_by("-creado").first()
+
+
+def _resumen_arbol(evento):
+    if not evento:
+        return {"total": 0, "con_padrino": 0, "porcentaje": 0}
+    datos = Nino.objects.filter(evento=evento).aggregate(
+        total=Count("id"), libres=Count("id", filter=Q(estado=Nino.Estado.DISPONIBLE)),
+    )
+    total, con_padrino = datos["total"], datos["total"] - datos["libres"]
+    return {
+        "total": total,
+        "con_padrino": con_padrino,
+        "porcentaje": round(con_padrino * 100 / total) if total else 0,
+    }
 
 
 def inicio(request):
-    """Página temporal mientras se construye el portal (parte 2)."""
-    fundacion = Fundacion.objects.filter(activa=True).first()
-    evento = Evento.objects.filter(activo=True).first()
-    stats = None
-    if evento:
-        total = Nino.objects.filter(evento=evento).count()
-        libres = Nino.objects.filter(evento=evento, estado=Nino.Estado.DISPONIBLE).count()
-        stats = {"total": total, "con_padrino": total - libres}
-    return render(request, "core/inicio.html", {"fundacion": fundacion, "evento": evento, "stats": stats})
+    evento = _evento_activo()
+    fundacion = evento.fundacion if evento else None
+    ctx = {"evento": evento, "arbol": _resumen_arbol(evento)}
+    if fundacion:
+        ctx.update(
+            fundacion=fundacion,
+            experiencias=fundacion.experiencias.filter(activo=True),
+            eventos_destacados=fundacion.eventos_destacados.filter(activo=True).prefetch_related(
+                Prefetch("fotos", queryset=FotoEventoDestacado.objects.order_by("orden", "id"))
+            ),
+            galeria=fundacion.galeria.filter(activo=True),
+            aliados=fundacion.aliados.filter(activo=True),
+        )
+    return render(request, "core/inicio.html", ctx)
+
+
+def proximamente(request, seccion):
+    titulos = {
+        "arbol": ("🎄 El Árbol de la Navidad", "Muy pronto podrás elegir regalos y conocer a los niños que te toquen."),
+        "mi-panel": ("Mi panel de padrino", "Muy pronto podrás crear tu cuenta y ver aquí a tus niños asignados."),
+    }
+    titulo, texto = titulos.get(seccion, ("Muy pronto", ""))
+    return render(request, "core/proximamente.html", {"titulo": titulo, "texto": texto,
+                                                      "arbol": _resumen_arbol(_evento_activo())})
 
 
 def salud(request):

@@ -1,0 +1,55 @@
+{% load static %}<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titulo %}{{ fundacion.nombre|default:"Fundación CreeHaSer" }}{% endblock %}</title>
+  <meta name="description" content="{% block descripcion %}{{ fundacion.nombre|default:'Fundación CreeHaSer' }} · {{ fundacion.lema|default:'Creer y Hacer hacen el Ser' }}{% endblock %}">
+  <link rel="icon" href="{% static 'img/logo.png' %}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/sitio.css' %}">
+  {% block head %}{% endblock %}
+</head>
+<body data-deco="{{ config.decoracion }}" data-deco-desde="{{ config.decoracion_desde }}" data-deco-hasta="{{ config.decoracion_hasta }}">
+
+{% block intro %}
+<div id="intro" aria-hidden="true">
+  <canvas id="introSnow"></canvas>
+  <div class="intro-in">
+    <img src="{% static 'img/logo.png' %}" alt="" class="i-logo">
+    <div class="i-gift"><div class="i-box"></div><div class="i-lid"></div><div class="i-rays"></div></div>
+    <div class="i-title">{{ config.portada_titulo_1 }} <span>{{ config.portada_titulo_2 }}</span></div>
+    <div class="i-sub">{{ fundacion.nombre|default:"Fundación CreeHaSer" }}</div>
+  </div>
+  <button class="i-skip" type="button" data-intro-skip>Saltar ›</button>
+</div>
+{% endblock %}
+
+<header class="top"><div class="wrap">
+  <a href="{% url 'inicio' %}" class="brand"><img src="{% static 'img/logo.png' %}" alt="{{ fundacion.nombre|default:'Fundación CreeHaSer' }}">{% include "core/partials/nacimiento.svg.html" %}</a>
+  <button class="burger" id="burger" type="button" aria-label="Abrir menú" aria-expanded="false"><span></span><span></span><span></span></button>
+  <nav class="main" id="mainNav">
+    {% url 'inicio' as u_inicio %}{% url 'arbol' as u_arbol %}{% url 'mi_panel' as u_panel %}
+    <a href="{{ u_inicio }}" class="{% if request.path == u_inicio %}on{% endif %}">Inicio</a>
+    <a href="{{ u_arbol }}" class="{% if request.path == u_arbol %}on{% endif %}">🎄 El Árbol</a>
+    <a href="{{ u_panel }}" class="{% if request.path == u_panel %}on{% endif %}">Mi panel</a>
+    {% if user.is_authenticated and user.es_organizador %}<a href="/admin/" class="admin">⚙️ Panel fundación</a>{% endif %}
+  </nav>
+</div><div class="xmas-lights" id="xLights"></div></header>
+
+<main>
+{% block contenido %}{% endblock %}
+</main>
+
+<footer><div class="wrap">
+  <div><b>{{ fundacion.nombre|default:"Fundación CreeHaSer" }}</b>{% if fundacion.lema %} · {{ fundacion.lema }}{% endif %}{% if fundacion.ciudad %} · {{ fundacion.ciudad }}{% endif %}{% if fundacion.email %} · {{ fundacion.email }}{% endif %}{% if fundacion.telefono %} · {{ fundacion.telefono }}{% endif %}</div>
+  <div>© {% now "Y" %} · Política de tratamiento de datos (Ley 1581 de 2012) · <a href="/admin/" style="color:inherit">Organizadores</a></div>
+</div></footer>
+
+<button class="totop" id="totop" type="button" aria-label="Volver arriba">↑</button>
+<canvas id="pageSnow"></canvas>
+<script src="{% static 'js/sitio.js' %}" defer></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

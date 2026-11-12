@@ -9,6 +9,13 @@ class FundacionAdmin(admin.ModelAdmin):
     list_display = ("nombre", "ciudad", "telefono", "email", "activa")
     prepopulated_fields = {"slug": ("nombre",)}
     search_fields = ("nombre",)
+    fieldsets = (
+        (None, {"fields": ("nombre", "slug", "logo", "activa")}),
+        ("Quiénes somos", {"fields": ("lema", "frase", "descripcion")}),
+        ("Nuestro ADN", {"fields": ("adn_subtitulo", "mision", "esencia", "vision")}),
+        ("Contacto y ubicación", {"fields": ("telefono", "email", "direccion", "ciudad", "horario",
+                                             "latitud", "longitud", "sitio_web")}),
+    )
 
 
 @admin.register(Evento)
