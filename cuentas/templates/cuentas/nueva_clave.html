@@ -1,0 +1,15 @@
+{% extends "cuentas/_base_auth.html" %}
+{% block caja %}
+{% if validlink %}
+<h2>Crea tu nueva contraseña</h2>
+<form method="post" novalidate>{% csrf_token %}
+  {% include "partials/campo.html" with campo=form.new_password1 %}
+  {% include "partials/campo.html" with campo=form.new_password2 %}
+  <div class="actions"><button class="btn btn-teal" type="submit">Guardar contraseña</button></div>
+</form>
+{% else %}
+<h2>Enlace vencido</h2>
+<p>Este enlace ya se usó o caducó. Pide uno nuevo.</p>
+<p style="text-align:center"><a class="btn btn-teal" href="{% url 'recuperar' %}">Pedir otro enlace</a></p>
+{% endif %}
+{% endblock %}

@@ -269,7 +269,7 @@ textarea{min-height:90px;resize:vertical}
 .hint{background:var(--cream);border-radius:10px;padding:9px 12px;font-size:13px;margin-top:12px}
 .navbtn{border:2px solid var(--teal);color:var(--teal-d)!important;background:#fff}
 .mygift{display:flex;gap:12px;align-items:center;background:#eef8ef;border:2px solid #cfe9d3;border-radius:14px;padding:12px 14px;margin-top:12px}
-.mygift.empty{background:#fff6e8;border-color:#f6d9a8}
+.mygift.vacio{background:#fff6e8;border-color:#f6d9a8}
 .mygift .g{font-family:Fredoka;font-size:19px;color:var(--green-d)}
 .badge-chg{display:inline-block;background:#f0e9fb;color:#5b3fa0;border-radius:999px;padding:1px 8px;font-size:11px;font-weight:800;margin-left:6px;cursor:pointer}
 .badge-pend{display:inline-block;background:#fff3d6;color:#8a5a00;border-radius:999px;padding:1px 8px;font-size:11px;font-weight:800}
@@ -371,3 +371,22 @@ td select{padding:5px 8px;border-radius:8px;width:auto;font-size:13px}
   nav.main{margin-left:0}
 }
 @media (max-width:560px){.steps,.what{grid-template-columns:1fr!important}}
+/* ===== Parte 3: formularios, avisos, árbol y panel ===== */
+.avisos{position:fixed;top:calc(var(--hh,97px) + 14px);left:50%;transform:translateX(-50%);z-index:220;display:flex;flex-direction:column;gap:8px;width:min(560px,92vw);pointer-events:none}
+.aviso{pointer-events:auto;background:var(--ink);color:#fff;padding:12px 18px;border-radius:14px;font-weight:700;box-shadow:0 10px 30px rgba(0,0,0,.2);animation:avisoIn .35s ease-out,avisoOut .5s 5.5s ease-in forwards}
+.aviso-success{background:#1f6a2a}.aviso-error{background:#a92320}.aviso-info{background:#0b5f5b}
+@keyframes avisoIn{from{opacity:0;transform:translateY(-10px)}}
+@keyframes avisoOut{to{opacity:0;transform:translateY(-10px);visibility:hidden}}
+.campo-error{color:#a92320;font-weight:700;font-size:13px;margin-top:4px}
+.check.con-error{outline:2px solid #f3b8b6}
+.nav-salir{margin:0;display:flex;align-items:center}
+.nav-salir button{background:none;border:0;font-weight:700;color:var(--muted);padding:8px 13px;border-radius:999px}
+.nav-salir button:hover{background:var(--cream2)}
+.auth-box{max-width:520px;margin:0 auto}
+.auth-box h2{font-size:30px;color:var(--teal-d)}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+@media(max-width:560px){.form-grid{grid-template-columns:1fr}}
+.pagina{padding:44px 0 70px}
+.gift-form{display:none;margin-top:10px}
+.gift-form.on{display:block}
+details.historial summary{cursor:pointer;font-weight:700;color:var(--teal-d);font-size:13px;margin-top:8px}

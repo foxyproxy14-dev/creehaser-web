@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block titulo %}Mi panel · {{ block.super }}{% endblock %}
+{% block intro %}{% endblock %}
+{% block contenido %}
+<section style="padding-top:34px;padding-bottom:70px"><div class="wrap">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px">
+    <div><h2 style="font-size:32px;color:var(--teal-d);margin:0">Panel de padrino · Hola, {{ user.first_name }} 👋</h2>
+      <p class="muted" style="margin:2px 0 0">{% if ninos %}Tienes {{ ninos|length }} niño{{ ninos|length|pluralize }} asignado{{ ninos|length|pluralize }} · mínimo {{ total_minimo|floatformat:"0" }} $ en regalos. ¡Gracias por tu generosidad!{% else %}Aún no tienes niños asignados.{% endif %}</p></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <a class="btn btn-red btn-sm" href="{% url 'arbol' %}">🎁 Elegir más regalos</a>
+      <a class="btn btn-ghost btn-sm" href="{% url 'mis_datos' %}">👤 Mis datos</a>
+    </div>
+  </div>
+
+  {% if ninos %}
+    {% if evento.instrucciones_entrega %}<div class="info" style="margin:0 0 16px">📦 <b>Cómo entregar tus regalos:</b> {{ evento.instrucciones_entrega|linebreaksbr }}</div>{% endif %}
+    <div class="grid2">
+    {% for n in ninos %}
+      <div class="card" id="nino-{{ n.pk }}">
+        <div style="display:flex;gap:14px;align-items:center">
+          {% include "campana/_avatar.html" with n=n tam=84 %}
+          <div style="flex:1"><h3 style="margin:0;color:var(--red)">{{ n.nombre }}</h3>
+            <div style="font-weight:800;color:var(--teal-d);font-size:14px">{{ n.get_sexo_display }} · {{ n.edad }} años{% if n.estatura_cm %} · {{ n.estatura_m }}{% endif %}</div>
+            <span class="pill st-{{ n.estado }}" style="margin-top:4px">{{ n.get_estado_display }}</span></div>
+        </div>
+        <div class="kv" style="margin:12px 0 0"><b>Le gusta</b><span>{{ n.gustos|default:"—" }}</span><b>Pidió</b><span>🎁 {{ n.regalo_deseado|default:"—" }}</span><b>Monto mínimo</b><span>{{ n.evento.monto_minimo|floatformat:"0" }} $</span><b>Asignado</b><span>{{ n.asignado_en|date:"d/m/Y, g:i a" }}</span></div>
+
+        <div class="mygift {% if not n.regalo_padrino %}vacio{% endif %}">
+          <div style="flex:1"><div class="small" style="font-weight:800;color:var(--muted)">🎁 LO QUE VOY A REGALAR</div>
+            {% if n.regalo_padrino %}<div class="g">{{ n.regalo_padrino }}</div>
+              {% with c=n.cambios_regalo.all %}{% if c|length > 1 %}<div class="small muted">Cambiado {{ c|length|add:"-1" }} vez/veces · último: {{ c.last.creado|date:"d/m/Y, g:i a" }}</div>{% endif %}{% endwith %}
+            {% else %}<div class="small">Aún no lo indicas. Puede ser lo que pidió u otra cosa relacionada con lo que le gusta.</div>{% endif %}
+          </div>
+          {% if n.estado == "asignado" %}<button class="btn {% if n.regalo_padrino %}btn-ghost{% else %}btn-red{% endif %} btn-sm" type="button" data-abrir="g{{ n.pk }}">{% if n.regalo_padrino %}Cambiar{% else %}Indicar regalo{% endif %}</button>{% endif %}
+        </div>
+        {% if n.estado == "asignado" %}
+        <form method="post" action="{% url 'nino_regalo' n.pk %}" class="gift-form" id="g{{ n.pk }}">{% csrf_token %}
+          <label>Regalo que vas a entregar</label><input type="text" name="regalo" maxlength="150" value="{{ n.regalo_padrino }}" placeholder="Ej.: si le gusta el espacio, una lámpara de constelaciones" required>
+          {% if n.regalo_padrino %}<label>¿Por qué lo cambias? <span class="muted small">(opcional, lo verá la fundación)</span></label><input type="text" name="motivo" maxlength="200" placeholder="Ej.: No lo conseguí en su talla">{% endif %}
+          <div class="actions"><button class="btn btn-teal btn-sm" type="submit">Guardar</button></div>
+        </form>
+        {% endif %}
+
+        <div class="timeline">{% for p in pasos %}<i class="{% if forloop.counter == 1 and n.estado != 'disponible' %}on{% elif forloop.counter == 2 and n.estado in 'recibido entregado agradecido' %}on{% elif forloop.counter == 3 and n.estado in 'entregado agradecido' %}on{% elif forloop.counter == 4 and n.estado == 'agradecido' %}on{% endif %}"></i>{% endfor %}</div>
+        <div class="tl-labels">{% for p in pasos %}<span>{{ p }}</span>{% endfor %}</div>
+
+        <p class="small" style="margin:12px 0 0"><b>Tu mensaje:</b> {% if n.mensaje_padrino %}<i>“{{ n.mensaje_padrino }}”</i>{% else %}<span class="muted">(sin mensaje)</span>{% endif %}
+          {% if n.estado == "asignado" or n.estado == "recibido" %}<a href="#" data-abrir="m{{ n.pk }}">{% if n.mensaje_padrino %}editar{% else %}escribir{% endif %}</a>{% endif %}</p>
+        {% if n.estado == "asignado" or n.estado == "recibido" %}
+        <form method="post" action="{% url 'nino_mensaje' n.pk %}" class="gift-form" id="m{{ n.pk }}">{% csrf_token %}
+          <textarea name="mensaje" maxlength="600" placeholder="Se imprime en una tarjeta y va junto a tu regalo">{{ n.mensaje_padrino }}</textarea>
+          <div class="actions"><button class="btn btn-teal btn-sm" type="submit">Guardar mensaje</button></div>
+        </form>
+        {% endif %}
+
+        {% if n.foto_entrega %}<div class="photo-ph"><img src="{{ n.foto_entrega.url }}" alt="Foto de la entrega del regalo"></div>{% endif %}
+
+        {% if n.puede_cancelar %}
+        <form method="post" action="{% url 'nino_cancelar' n.pk %}" class="actions" style="justify-content:flex-start" onsubmit="return confirm('¿Cancelar este regalo? {{ n.nombre|escapejs }} volverá al árbol para otra persona.')">{% csrf_token %}
+          <button class="btn btn-ghost btn-sm" type="submit">Cancelar este regalo</button>
+          <span class="small muted">Puedes cancelar durante los primeros {{ n.evento.minutos_cancelacion }} minutos.</span>
+        </form>
+        {% endif %}
+      </div>
+    {% endfor %}
+    </div>
+  {% else %}
+    <div class="card empty"><div style="font-size:48px">🎄</div><p>Ve al árbol y elige un regalo para empezar.</p><a class="btn btn-red" href="{% url 'arbol' %}">Ir al árbol</a></div>
+  {% endif %}
+
+  <div class="card" style="margin-top:22px;display:flex;gap:16px;align-items:center;flex-wrap:wrap">
+    <div style="font-size:36px">💬</div><div style="flex:1;min-width:220px"><h3 style="margin:0">¿Dudas?</h3>
+    <p class="muted small" style="margin:2px 0 0">Escríbele a la fundación{% if fundacion.telefono %} al {{ fundacion.telefono }}{% endif %}{% if fundacion.email %} o a {{ fundacion.email }}{% endif %}. Pronto también por chat aquí mismo.</p></div>
+  </div>
+</div></section>
+{% endblock %}
+{% block scripts %}
+<script>
+document.querySelectorAll('[data-abrir]').forEach(function(b){b.addEventListener('click',function(e){e.preventDefault();var f=document.getElementById(b.dataset.abrir);f.classList.toggle('on');var i=f.querySelector('input,textarea');if(i&&f.classList.contains('on'))i.focus();});});
+</script>
+{% endblock %}

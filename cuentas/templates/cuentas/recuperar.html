@@ -1,0 +1,11 @@
+{% extends "cuentas/_base_auth.html" %}
+{% block titulo %}Recuperar contraseña · {{ block.super }}{% endblock %}
+{% block caja %}
+<h2>¿Olvidaste tu contraseña?</h2>
+<p class="muted">Escribe tu correo y te enviaremos un enlace para crear una nueva.</p>
+<form method="post" novalidate>{% csrf_token %}
+  {% include "partials/campo.html" with campo=form.email %}
+  <div class="actions"><button class="btn btn-teal" type="submit">Enviar enlace</button></div>
+</form>
+<p style="text-align:center"><a href="{% url 'ingresar' %}">← Volver a iniciar sesión</a></p>
+{% endblock %}

@@ -124,7 +124,10 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
-LOGIN_URL = "/admin/login/"
+LOGIN_URL = "ingresar"
+LOGIN_REDIRECT_URL = "mi_panel"
+LOGOUT_REDIRECT_URL = "inicio"
+PASSWORD_RESET_TIMEOUT = 60 * 60 * 24  # el enlace de recuperar contraseña dura 1 día
 
 # --- Idioma y zona horaria ----------------------------------------------------------
 LANGUAGE_CODE = "es-co"

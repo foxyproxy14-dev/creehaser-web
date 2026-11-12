@@ -1,0 +1,1 @@
+{% if n.foto %}<img class="kph" src="{{ n.foto.url }}" alt="Foto de {{ n.nombre }}" style="width:{{ tam }}px;height:{{ tam }}px">{% else %}<div class="kemo" style="width:{{ tam }}px;height:{{ tam }}px;font-size:{% widthratio tam 2 1 %}px;background:{% if n.sexo == 'nina' %}#fde7ef{% else %}#e3eefb{% endif %}">{% if n.sexo == 'nina' %}👧{% else %}👦{% endif %}</div>{% endif %}

@@ -1,0 +1,25 @@
+{% extends "cuentas/_base_auth.html" %}
+{% block titulo %}Mis datos · {{ block.super }}{% endblock %}
+{% block caja %}
+<h2>👤 Mis datos</h2>
+<form method="post" novalidate>{% csrf_token %}<input type="hidden" name="form" value="datos">
+  <div class="form-grid">
+    <div>{% include "partials/campo.html" with campo=datos.first_name %}</div>
+    <div>{% include "partials/campo.html" with campo=datos.last_name %}</div>
+  </div>
+  <label>Correo</label><input type="email" value="{{ user.email }}" disabled>
+  {% include "partials/campo.html" with campo=datos.telefono %}
+  <div class="actions"><button class="btn btn-teal" type="submit">Guardar datos</button></div>
+</form>
+<hr style="border:0;border-top:1px solid var(--line);margin:22px 0">
+<h3>Cambiar contraseña</h3>
+<form method="post" novalidate>{% csrf_token %}<input type="hidden" name="form" value="clave">
+  {% include "partials/campo.html" with campo=clave.old_password %}
+  <div class="form-grid">
+    <div>{% include "partials/campo.html" with campo=clave.new_password1 %}</div>
+    <div>{% include "partials/campo.html" with campo=clave.new_password2 %}</div>
+  </div>
+  <div class="actions"><button class="btn btn-ghost" type="submit">Cambiar contraseña</button></div>
+</form>
+<p style="text-align:center"><a href="{% url 'mi_panel' %}">← Volver a mi panel</a></p>
+{% endblock %}

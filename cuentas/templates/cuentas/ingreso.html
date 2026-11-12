@@ -1,0 +1,16 @@
+{% extends "cuentas/_base_auth.html" %}
+{% block titulo %}Iniciar sesión · {{ block.super }}{% endblock %}
+{% block caja %}
+<h2>Iniciar sesión</h2>
+<form method="post" novalidate>{% csrf_token %}
+  <input type="hidden" name="next" value="{{ next }}">
+  {% for e in form.non_field_errors %}<div class="ferr" style="display:block">{{ e }}</div>{% endfor %}
+  {% include "partials/campo.html" with campo=form.username %}
+  {% include "partials/campo.html" with campo=form.password %}
+  <div class="actions" style="justify-content:space-between;align-items:center">
+    <a href="{% url 'recuperar' %}" class="small">¿Olvidaste tu contraseña?</a>
+    <button class="btn btn-teal" type="submit">Iniciar sesión</button>
+  </div>
+</form>
+<p class="small muted" style="text-align:center">¿No tienes cuenta? <a href="{% url 'registro' %}{% if next %}?next={{ next|urlencode }}{% endif %}">Créala aquí</a></p>
+{% endblock %}

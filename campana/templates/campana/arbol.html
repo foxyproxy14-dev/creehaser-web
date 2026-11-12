@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% load static %}
+{% block titulo %}El Árbol · {{ block.super }}{% endblock %}
+{% block intro %}{% endblock %}
+
+{% block contenido %}
+<section style="padding-top:34px"><div class="wrap">
+  <div class="tree-head">
+    <div><h2>🎄 El Árbol de la Navidad</h2>
+      <p class="muted" style="margin:4px 0 0">Toca los regalos que quieras apadrinar (puedes elegir varios). Al confirmar conocerás a los niños que te tocaron.</p></div>
+    <div class="legend">
+      <span><i style="background:linear-gradient(90deg,#d6312f,#2a7fcf,#f28c28,#9b7fd1)"></i>Disponible</span>
+      <span><i style="background:#c9d3cd"></i>Ya tiene padrino</span>
+      {% if user.is_authenticated %}<span><i style="background:var(--gold)"></i>Tus regalos</span>{% endif %}
+      <span><i style="background:#fff;border:2px solid var(--gold)"></i>Seleccionado</span>
+    </div>
+  </div>
+
+  {% if not evento or not evento.activo %}
+    <div class="card empty"><div style="font-size:48px">🎄</div><h3>El árbol abrirá muy pronto</h3><p>Vuelve en unos días para elegir tu regalo.</p></div>
+  {% elif not total %}
+    <div class="card empty"><div style="font-size:48px">🎁</div><h3>Estamos preparando los regalos</h3><p>La fundación está cargando a los niños. ¡Vuelve muy pronto!</p></div>
+  {% else %}
+    {% if not user.is_authenticated %}
+      <div class="login-strip"><div style="font-size:28px">🔐</div><p>Para elegir regalos necesitas iniciar sesión o crear tu cuenta de padrino.</p>
+        <a class="btn btn-teal btn-sm" href="{% url 'registro' %}?next={% url 'arbol' %}">Crear cuenta</a>
+        <a class="btn btn-ghost btn-sm" href="{% url 'ingresar' %}?next={% url 'arbol' %}">Iniciar sesión</a></div>
+    {% endif %}
+    <div class="tree-box"><svg id="tree" viewBox="0 0 800 900" role="img" aria-label="Árbol de Navidad con regalos"
+         data-slots="{{ slots }}" data-auth="{{ user.is_authenticated|yesno:'1,0' }}" data-max="{{ max_por_vez }}"
+         data-min="{{ evento.monto_minimo|floatformat:'0' }}" data-mios="{{ mios }}"></svg></div>
+    <p class="small muted" style="text-align:center;margin-top:12px">
+      Quedan {{ libres }} de {{ total }} regalos disponibles{% if mios %} · Tienes {{ mios }} regalo{{ mios|pluralize }} apadrinado{{ mios|pluralize }} · <a href="{% url 'mi_panel' %}">ver mi panel</a>{% endif %}
+    </p>
+    <div class="selbar" id="selbar"></div>
+  {% endif %}
+</div></section>
+
+{% if evento and total %}
+<div class="modal-bg" id="mConfirmar"><div class="modal">
+  <button class="x" type="button" data-cerrar aria-label="Cerrar">×</button>
+  <form method="post" action="{% url 'confirmar' %}">{% csrf_token %}
+    <input type="hidden" name="cantidad" id="cCantidad" value="0">
+    <div style="text-align:center;font-size:50px" id="cIconos">🎁</div>
+    <h3 style="text-align:center" id="cTitulo">¿Confirmas tu regalo?</h3>
+    <p style="text-align:center" id="cTexto"></p>
+    <div class="warn" id="cPrevios" style="display:none"></div>
+    <label for="cMsg">Mensaje para los niños <span class="muted small">(opcional; luego lo puedes cambiar en tu panel)</span></label>
+    <textarea id="cMsg" name="mensaje" maxlength="600" placeholder="Ej.: ¡Feliz Navidad! Espero que este regalo te saque una gran sonrisa…"></textarea>
+    <label class="check"><input type="checkbox" name="acepto" id="cOk" value="1"> <span>Entiendo el compromiso de entregar cada regalo (mínimo {{ evento.monto_minimo|floatformat:"0" }} $ por niño) antes de la fecha que indique la fundación.</span></label>
+    <p class="small muted" style="margin-top:8px">Si te equivocas, tendrás {{ evento.minutos_cancelacion }} minutos para cancelar desde tu panel.</p>
+    <div class="actions"><button class="btn btn-ghost" type="button" data-cerrar>Volver al árbol</button><button class="btn btn-red" type="submit" id="cGo" disabled>Sí, confirmar 🎄</button></div>
+  </form>
+</div></div>
+
+<div class="modal-bg" id="mIngresar"><div class="modal" style="text-align:center">
+  <button class="x" type="button" data-cerrar aria-label="Cerrar">×</button>
+  <div style="font-size:48px">🔐</div>
+  <h3>Tu cuenta de padrino</h3>
+  <p class="muted">Para elegir regalos necesitas una cuenta. Así te asignamos tus niños, ves todo en tu panel y la fundación puede contactarte.</p>
+  <div class="actions" style="justify-content:center">
+    <a class="btn btn-teal" href="{% url 'registro' %}?next={% url 'arbol' %}">Crear cuenta</a>
+    <a class="btn btn-ghost" href="{% url 'ingresar' %}?next={% url 'arbol' %}">Iniciar sesión</a>
+  </div>
+</div></div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}<script src="{% static 'js/arbol.js' %}" defer></script>{% endblock %}
