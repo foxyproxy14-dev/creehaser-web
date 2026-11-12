@@ -10,12 +10,47 @@ fundación gestiona todo desde su panel.
 | Parte | Estado |
 |---|---|
 | Prototipo visual (`prototipo/`) | ✅ Validado con la fundación |
-| Versión real (Django + PostgreSQL) | 🚧 En construcción |
+| Parte 1 · Base: Django, PostgreSQL, Docker, modelos y admin | ✅ |
+| Parte 2 · Portal de la fundación | ⏳ |
+| Parte 3 · Árbol, cuentas y panel de padrino | ⏳ |
+| Parte 4 · Panel de organizadores, Telegram y correos | ⏳ |
 
 ### Prototipo
 `prototipo/index.html` es la maqueta funcional (solo navegador, datos de ejemplo).
 Sirve como referencia de diseño y comportamiento para la versión real.
 Ábrelo directamente en el navegador.
+
+## Puesta en marcha
+
+Ver **[docs/DESPLIEGUE.md](docs/DESPLIEGUE.md)**. En resumen:
+
+```bash
+cp .env.example .env   # y rellenarlo
+docker compose up -d --build
+docker compose exec web python manage.py createsuperuser
+```
+
+## Estructura
+
+```
+config/      configuración de Django
+cuentas/     usuarios (padrinos y organizadores, inicio de sesión con correo)
+campana/     fundaciones, eventos, niños e historial de regalos
+core/        portal público
+nginx/       servidor web delante de Django
+scripts/     arranque, respaldo y restauración
+prototipo/   maqueta validada (referencia de diseño)
+```
+
+## Desarrollo local (sin Docker)
+
+```bash
+pip install -r requirements.txt
+DJANGO_DEBUG=true python manage.py migrate
+DJANGO_DEBUG=true python manage.py datos_iniciales --demo
+DJANGO_DEBUG=true python manage.py test
+```
+Sin variables `POSTGRES_*` usa SQLite.
 
 ## Funcionalidades (versión real)
 
