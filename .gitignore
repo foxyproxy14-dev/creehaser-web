@@ -1,0 +1,25 @@
+# Entorno y secretos (NUNCA subir)
+.env
+*.env
+!.env.example
+
+# Python / Django
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+staticfiles/
+media/
+*.sqlite3
+
+# Respaldos y datos
+backups/
+*.sql
+*.sql.gz
+*.dump
+
+# Sistema / editores
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
