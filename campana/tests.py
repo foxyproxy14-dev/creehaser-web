@@ -13,6 +13,7 @@ from .models import CambioRegalo, Evento, Fundacion, Nino
 Usuario = get_user_model()
 
 
+@override_settings(MEDIA_ROOT="/tmp/creehaser-test-media")
 class BaseTest(TestCase):
     def setUp(self):
         call_command("datos_iniciales", "--demo", verbosity=0)
@@ -83,5 +84,5 @@ class VistasTest(BaseTest):
     def test_inicio_y_salud(self):
         r = self.client.get("/")
         self.assertContains(r, "Fundación CreeHaSer")
-        self.assertContains(r, "0 de 6 niños con padrino")
+        self.assertContains(r, "0 de 6 niños ya tienen padrino")
         self.assertEqual(self.client.get("/salud/").json(), {"estado": "ok"})

@@ -12,6 +12,7 @@ from django.core.management.base import BaseCommand
 from django.db import transaction
 
 from campana.models import Evento, Fundacion, Nino
+from core.semillas_portal import cargar_portal
 
 NINOS_DEMO = [
     ("Sofía", "nina", 6, 110, "dibujar y los unicornios", "Set de colores y cuaderno de dibujo"),
@@ -65,6 +66,41 @@ class Command(BaseCommand):
             ),
         )
         say(("Creado" if creado else "Ya existía") + f": {evento}")
+
+        textos = dict(
+            frase="Transformamos vidas desde el amor y la educación emocional",
+            descripcion=(
+                "Hace más de 10 años nació un sueño: sembrar esperanza y transformar vidas. Desde entonces, un grupo "
+                "de profesionales y voluntarios ha trabajado con el corazón, convencidos de que dar es la forma más "
+                "hermosa de recibir. Acompañamos a niños, jóvenes y familias en su crecimiento personal y espiritual, "
+                "sembrando cada día semillas de amor y fe."
+            ),
+            adn_subtitulo="Apoyando a niños, jóvenes y familias en su crecimiento personal y espiritual.",
+            mision=(
+                "Impulsar el desarrollo humano, espiritual y socioemocional de niños, jóvenes y familias a través de "
+                "programas educativos y comunitarios que fortalezcan la convivencia y el liderazgo con propósito."
+            ),
+            esencia=(
+                "Somos una comunidad que une corazones, talentos y fe para fortalecer valores, promover la convivencia "
+                "y oportunidades de desarrollo. Creemos en la educación, la espiritualidad y el coaching como caminos "
+                "para construir paz desde el amor."
+            ),
+            vision=(
+                "Ser reconocidos en Latinoamérica como una institución líder en educación emocional y formación en "
+                "valores, generando transformaciones sostenibles en la sociedad."
+            ),
+        )
+        # Rellena solo lo que esté vacío (o el texto corto de la primera versión): nunca pisa lo editado en el panel
+        TEXTO_CORTO_V1 = "Hace más de 10 años nació un sueño: sembrar esperanza y transformar vidas. Acompañamos"
+        cambiados = [k for k in textos if not getattr(fundacion, k)
+                     or (k == "descripcion" and fundacion.descripcion.startswith(TEXTO_CORTO_V1))]
+        for k in cambiados:
+            setattr(fundacion, k, textos[k])
+        if cambiados:
+            fundacion.save()
+
+        for linea in cargar_portal(fundacion):
+            say(linea)
 
         if opts["demo"]:
             n = 0

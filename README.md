@@ -11,7 +11,7 @@ fundación gestiona todo desde su panel.
 |---|---|
 | Prototipo visual (`prototipo/`) | ✅ Validado con la fundación |
 | Parte 1 · Base: Django, PostgreSQL, Docker, modelos y admin | ✅ |
-| Parte 2 · Portal de la fundación | ⏳ |
+| Parte 2 · Portal de la fundación (contenido editable) | ✅ |
 | Parte 3 · Árbol, cuentas y panel de padrino | ⏳ |
 | Parte 4 · Panel de organizadores, Telegram y correos | ⏳ |
 
@@ -29,6 +29,22 @@ cp .env.example .env   # y rellenarlo
 docker compose up -d --build
 docker compose exec web python manage.py createsuperuser
 ```
+
+## Editar el contenido del portal
+
+Todo se cambia desde `/admin/`, sin tocar código:
+
+| Quiero cambiar… | Dónde |
+|---|---|
+| Títulos y texto de la portada, foto de «Quiénes somos», decoración navideña | Portal → Configuración del sitio |
+| Historia, frase, misión, esencia, visión, dirección, horario, teléfono, ubicación del mapa | Campaña → Fundaciones |
+| Tarjetas de «Experiencias» | Portal → Experiencias |
+| Sección «Eventos» (banner, botón, carrusel de fotos) | Portal → Eventos destacados |
+| Fotos de la galería | Portal → Galería |
+| Logos de aliados y su enlace | Portal → Aliados |
+
+Cada lista tiene columnas **orden** y **visible** para reordenar u ocultar sin borrar.
+Una sección sin contenido visible desaparece sola de la página y del menú.
 
 ## Estructura
 
