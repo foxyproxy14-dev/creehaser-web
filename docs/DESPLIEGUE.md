@@ -78,6 +78,13 @@ client_max_body_size 12M;
 
 Comprobación de salud: `https://tu-dominio/salud/` debe responder `{"estado": "ok"}`.
 
+## Panel de la fundación
+
+Los usuarios marcados como organizadores entran en `/organizacion/`. Desde allí pueden buscar padrinos,
+agregar o editar niños, actualizar estados, subir la foto de entrega y exportar la campaña en CSV.
+Al marcar un regalo como **Agradecimiento enviado**, el padrino recibe por correo un enlace a su certificado.
+La administración técnica y el contenido general siguen disponibles en `/admin/`.
+
 ## 6. Respaldos
 
 ```bash
@@ -125,3 +132,4 @@ Sin configurar correo, los enlaces de «¿Olvidaste tu contraseña?» solo queda
 | Entrar a la base de datos | `docker compose exec db psql -U creehaser creehaser` |
 
 > ⚠️ Nunca uses `docker compose down -v`: la `-v` borra los volúmenes con la base de datos y las fotos.
+

@@ -13,7 +13,7 @@ fundación gestiona todo desde su panel.
 | Parte 1 · Base: Django, PostgreSQL, Docker, modelos y admin | ✅ |
 | Parte 2 · Portal de la fundación (contenido editable) | ✅ |
 | Parte 3 · Árbol, cuentas y panel de padrino | ✅ |
-| Parte 4 · Panel de organizadores, Telegram y correos | ⏳ |
+| Parte 4 · Panel de organizadores, Telegram, correos y certificados | ✅ |
 
 ### Prototipo
 `prototipo/index.html` es la maqueta funcional (solo navegador, datos de ejemplo).
@@ -79,6 +79,7 @@ Sin variables `POSTGRES_*` usa SQLite.
 - **Panel de organizadores**: gestión de niños (con foto), regalos de padrinos con
   historial de cambios, padrinos registrados, estados, exportación y ajustes.
 - **Notificaciones** por Telegram a los organizadores.
+- **Cierre de la campaña**: foto de entrega, correo de agradecimiento y certificado imprimible para el padrino.
 - **Decoración navideña automática** por fechas (configurable).
 - Preparado para **varias fundaciones y eventos** a futuro.
 
@@ -95,3 +96,4 @@ Sin variables `POSTGRES_*` usa SQLite.
 - Fotos y datos de los niños y padrinos viven en la base de datos y en `media/`
   del servidor, **nunca** en Git.
 - Ley 1098 de 2006 (infancia y adolescencia) y Ley 1581 de 2012 (protección de datos).
+

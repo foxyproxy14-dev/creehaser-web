@@ -1,5 +1,7 @@
 import datetime
+import tempfile
 from io import BytesIO
+from pathlib import Path
 
 from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -13,7 +15,7 @@ from .models import CambioRegalo, Evento, Fundacion, Nino
 Usuario = get_user_model()
 
 
-@override_settings(MEDIA_ROOT="/tmp/creehaser-test-media")
+@override_settings(MEDIA_ROOT=str(Path(tempfile.gettempdir()) / "creehaser-test-media"))
 class BaseTest(TestCase):
     def setUp(self):
         call_command("datos_iniciales", "--demo", verbosity=0)
@@ -65,7 +67,7 @@ class NinoTest(BaseTest):
         self.assertEqual(Nino(estatura_cm=115).estatura_m, "1,15 m")
 
 
-@override_settings(MEDIA_ROOT="/tmp/creehaser-test-media")
+@override_settings(MEDIA_ROOT=str(Path(tempfile.gettempdir()) / "creehaser-test-media"))
 class FotoTest(BaseTest):
     def test_foto_se_reduce_y_guarda_como_jpg(self):
         buf = BytesIO()
@@ -86,3 +88,4 @@ class VistasTest(BaseTest):
         self.assertContains(r, "Fundación CreeHaSer")
         self.assertContains(r, "0 de 6 niños ya tienen padrino")
         self.assertEqual(self.client.get("/salud/").json(), {"estado": "ok"})
+

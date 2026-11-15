@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block titulo %}Certificado de agradecimiento · {{ fundacion.nombre }}{% endblock %}
+{% block head %}<style>@media print{.top,footer,.no-print,#totop{display:none!important}main{padding:0}.cert{min-height:90vh;box-shadow:none}}</style>{% endblock %}
+{% block intro %}{% endblock %}
+{% block contenido %}<section class="section"><div class="wrap narrow">
+  <div class="cert">
+    <div class="cert-mark">♥</div><span class="eyebrow">FUNDACIÓN CREEHASER</span>
+    <h1>Certificado de agradecimiento</h1>
+    <p>Reconocemos con gratitud a</p><h2>{{ nino.padrino.get_full_name|default:nino.padrino.email }}</h2>
+    <p>por regalar alegría y apadrinar a <b>{{ nino.nombre }}</b> durante<br><b>{{ nino.evento.nombre }}</b>.</p>
+    <blockquote>“Creer y Hacer hacen el Ser”</blockquote>
+    <p class="muted">{{ nino.evento.fundacion.nombre }} · {{ nino.evento.fundacion.ciudad }}</p>
+  </div>
+  <p class="center no-print"><button class="btn" type="button" onclick="window.print()">Imprimir o guardar como PDF</button></p>
+</div></section>{% endblock %}
+

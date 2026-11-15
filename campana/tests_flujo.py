@@ -1,5 +1,7 @@
 import datetime
 import re
+import tempfile
+from pathlib import Path
 
 from django.contrib.auth import get_user_model
 from django.core import mail
@@ -13,7 +15,7 @@ from .servicios import ErrorApadrinamiento, asignar_al_azar
 Usuario = get_user_model()
 
 
-@override_settings(MEDIA_ROOT="/tmp/creehaser-test-media-flujo")
+@override_settings(MEDIA_ROOT=str(Path(tempfile.gettempdir()) / "creehaser-test-media-flujo"))
 class FlujoPadrinoTest(TestCase):
     def setUp(self):
         call_command("datos_iniciales", "--demo", verbosity=0)
@@ -163,3 +165,46 @@ class FlujoPadrinoTest(TestCase):
         self.client.post("/cuenta/mis-datos/", {"form": "datos", "first_name": "Ana María", "last_name": "López", "telefono": "+57 301 000 0000"})
         self.ana.refresh_from_db()
         self.assertEqual(self.ana.first_name, "Ana María")
+
+
+@override_settings(MEDIA_ROOT=str(Path(tempfile.gettempdir()) / "creehaser-test-media-organizacion"))
+class PanelOrganizadorTest(TestCase):
+    def setUp(self):
+        call_command("datos_iniciales", "--demo", verbosity=0)
+        self.evento = Evento.objects.get(slug="navidad-2026")
+        self.org = Usuario.objects.create_user(
+            "org@creehaser.org", "Navidad-2026!", first_name="Organizadora",
+            es_organizador=True, fundacion=self.evento.fundacion,
+        )
+        self.padrino = Usuario.objects.create_user("padrino@correo.com", "Navidad-2026!", first_name="Pablo")
+
+    def test_solo_organizador_entra_al_panel(self):
+        self.client.force_login(self.padrino)
+        self.assertEqual(self.client.get("/organizacion/").status_code, 403)
+        self.client.force_login(self.org)
+        self.assertContains(self.client.get("/organizacion/"), "Panel de la fundación")
+
+    def test_actualiza_estado_y_envia_certificado(self):
+        nino = asignar_al_azar(self.evento, self.padrino, 1)[0]
+        self.client.force_login(self.org)
+        r = self.client.post(f"/organizacion/ninos/{nino.pk}/estado/", {
+            "estado": "agradecido", "nota_interna": "Entrega confirmada",
+        })
+        self.assertRedirects(r, "/organizacion/")
+        nino.refresh_from_db()
+        self.assertEqual(nino.estado, "agradecido")
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertContains(self.client.get(f"/certificado/{nino.pk}/"), "Certificado de agradecimiento")
+
+    def test_exporta_csv_y_crea_nino(self):
+        self.client.force_login(self.org)
+        r = self.client.get("/organizacion/exportar/")
+        self.assertEqual(r.status_code, 200)
+        self.assertIn("text/csv", r["Content-Type"])
+        r = self.client.post("/organizacion/ninos/nuevo/", {
+            "nombre": "Luna", "sexo": "nina", "edad": 8, "estado": "disponible",
+            "gustos": "dibujar", "regalo_deseado": "Colores",
+        })
+        self.assertRedirects(r, "/organizacion/")
+        self.assertTrue(Nino.objects.filter(nombre="Luna", evento=self.evento).exists())
+

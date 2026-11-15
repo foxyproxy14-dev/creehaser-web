@@ -1,0 +1,13 @@
+{% extends "base.html" %}{% load static %}
+{% block titulo %}{% if nino %}Editar {{ nino.nombre }}{% else %}Agregar niño{% endif %} · {{ fundacion.nombre }}{% endblock %}
+{% block contenido %}<section class="section"><div class="wrap narrow">
+  <a href="{% url 'panel_organizador' %}">← Volver al panel</a>
+  <h1>{% if nino %}Editar ficha de {{ nino.nombre }}{% else %}Agregar niño al árbol{% endif %}</h1>
+  <p class="muted">Evento: {{ evento.nombre }}</p>
+  <form method="post" enctype="multipart/form-data" class="card form-card">{% csrf_token %}
+    {{ form.non_field_errors }}
+    {% for campo in form %}{% include "partials/campo.html" with campo=campo %}{% endfor %}
+    <button class="btn" type="submit">Guardar ficha</button>
+  </form>
+</div></section>{% endblock %}
+

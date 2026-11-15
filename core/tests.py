@@ -1,4 +1,6 @@
 import shutil
+import tempfile
+from pathlib import Path
 
 from django.contrib.auth import get_user_model
 from django.core.management import call_command
@@ -8,7 +10,7 @@ from campana.models import Fundacion, Nino
 
 from .models import Aliado, ConfiguracionSitio, EventoDestacado, Experiencia, FotoGaleria
 
-MEDIA = "/tmp/creehaser-test-media-portal"
+MEDIA = str(Path(tempfile.gettempdir()) / "creehaser-test-media-portal")
 
 
 @override_settings(MEDIA_ROOT=MEDIA)
@@ -80,3 +82,4 @@ class PortalTest(TestCase):
         u = get_user_model().objects.create_user("org@creehaser.org", "clave-segura-123", es_organizador=True)
         self.client.force_login(u)
         self.assertContains(self.client.get("/"), "⚙️ Panel fundación")
+

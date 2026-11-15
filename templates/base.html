@@ -34,7 +34,7 @@
     <a href="{{ u_inicio }}" class="{% if request.path == u_inicio %}on{% endif %}">Inicio</a>
     <a href="{{ u_arbol }}" class="{% if request.path == u_arbol %}on{% endif %}">🎄 El Árbol</a>
     <a href="{{ u_panel }}" class="{% if request.path == u_panel %}on{% endif %}">Mi panel</a>
-    {% if user.is_authenticated and user.es_organizador %}<a href="/admin/" class="admin">⚙️ Panel fundación</a>{% endif %}
+    {% if user.is_authenticated and user.es_organizador %}<a href="{% url 'panel_organizador' %}" class="admin">⚙️ Panel fundación</a>{% endif %}
     {% if user.is_authenticated %}
       <form method="post" action="{% url 'salir' %}" class="nav-salir">{% csrf_token %}<button type="submit" title="Cerrar sesión">Salir</button></form>
     {% else %}
@@ -59,3 +59,4 @@
 {% block scripts %}{% endblock %}
 </body>
 </html>
+
