@@ -307,6 +307,16 @@ textarea{min-height:90px;resize:vertical}
 .st-asignado{background:#fff3d6;color:#8a5a00}
 .st-recibido{background:#e1edfb;color:#1d5c9e}
 .st-entregado{background:#e3f4e5;color:#1f6a2a}
+.org-head{padding:42px 0 28px;background:linear-gradient(135deg,#f4fbf9,#fff8eb)}
+.org-head .wrap{display:flex;justify-content:space-between;gap:24px;align-items:end}
+.org-head h1{margin:6px 0}.org-actions{display:flex;gap:8px;flex-wrap:wrap}
+.org-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+.org-stats .card{padding:20px;text-align:center}.org-stats b{display:block;font:700 2rem Fredoka;color:var(--green)}.org-stats span{color:var(--muted)}
+.org-filtros{display:grid;grid-template-columns:2fr 1fr auto;gap:10px;margin:18px 0}.org-filtros input,.org-filtros select,.org-estado select,.org-estado textarea,.org-estado input{width:100%}
+.org-lista{display:grid;gap:14px}.org-fila{display:grid;grid-template-columns:1.1fr 1.2fr 1.7fr;gap:18px;align-items:start;padding:18px}.org-persona{display:flex;gap:12px;align-items:center}.org-persona h3{margin:0 0 4px}.org-persona .avatar{width:60px;height:60px}.org-datos{display:grid;grid-template-columns:1fr 1fr;gap:12px}.org-datos p{margin:0}.org-estado{display:grid;gap:8px}.org-estado label{font-size:.85rem;font-weight:700}
+.form-card{padding:24px;margin-top:18px}.form-card .campo{margin-bottom:15px}.narrow{max-width:820px}.center{text-align:center}
+.cert{padding:70px 55px;text-align:center;border:10px double #d9ba6a;border-radius:10px;background:#fffdf7;box-shadow:0 12px 40px #173c3220}.cert-mark{font-size:3.5rem;color:var(--red)}.cert h1{font-size:2.6rem;color:var(--green)}.cert h2{font-size:2rem;color:var(--red)}.cert blockquote{font:600 1.3rem Fredoka;color:#8b6a22;margin:35px}
+@media(max-width:800px){.org-head .wrap{align-items:start;flex-direction:column}.org-stats{grid-template-columns:1fr 1fr}.org-filtros,.org-fila{grid-template-columns:1fr}.org-datos{grid-template-columns:1fr 1fr}.cert{padding:40px 18px}.cert h1{font-size:2rem}}
 .st-agradecido{background:#f0e9fb;color:#5b3fa0}
 .timeline{display:flex;gap:4px;margin:14px 0 6px}
 .timeline i{flex:1;height:7px;border-radius:99px;background:var(--cream2)}
@@ -390,3 +400,4 @@ td select{padding:5px 8px;border-radius:8px;width:auto;font-size:13px}
 .gift-form{display:none;margin-top:10px}
 .gift-form.on{display:block}
 details.historial summary{cursor:pointer;font-weight:700;color:var(--teal-d);font-size:13px;margin-top:8px}
+

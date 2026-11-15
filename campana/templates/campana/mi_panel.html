@@ -54,6 +54,7 @@
         {% endif %}
 
         {% if n.foto_entrega %}<div class="photo-ph"><img src="{{ n.foto_entrega.url }}" alt="Foto de la entrega del regalo"></div>{% endif %}
+        {% if n.estado == "agradecido" %}<p><a class="btn btn-sm" href="{% url 'certificado' n.pk %}">Ver mi certificado</a></p>{% endif %}
 
         {% if n.puede_cancelar %}
         <form method="post" action="{% url 'nino_cancelar' n.pk %}" class="actions" style="justify-content:flex-start" onsubmit="return confirm('¿Cancelar este regalo? {{ n.nombre|escapejs }} volverá al árbol para otra persona.')">{% csrf_token %}
@@ -79,3 +80,4 @@
 document.querySelectorAll('[data-abrir]').forEach(function(b){b.addEventListener('click',function(e){e.preventDefault();var f=document.getElementById(b.dataset.abrir);f.classList.toggle('on');var i=f.querySelector('input,textarea');if(i&&f.classList.contains('on'))i.focus();});});
 </script>
 {% endblock %}
+

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block titulo %}Panel de la fundación · {{ fundacion.nombre }}{% endblock %}
+{% block contenido %}
+<section class="org-head"><div class="wrap">
+  <div><span class="eyebrow">GESTIÓN DE CAMPAÑA</span><h1>Panel de la fundación</h1><p>{{ evento.nombre|default:"Sin evento configurado" }}</p></div>
+  <div class="org-actions"><a class="btn btn-ghost" href="{% url 'exportar_campana' %}">⬇ Exportar CSV</a><a class="btn" href="{% url 'organizador_nino_nuevo' %}">＋ Agregar niño</a><a class="btn btn-ghost" href="/admin/">Ajustes avanzados</a></div>
+</div></section>
+<section class="section"><div class="wrap">
+  <div class="org-stats">
+    <div class="card"><b>{{ total }}</b><span>Niños</span></div>
+    <div class="card"><b>{{ resumen.disponible|default:0 }}</b><span>Disponibles</span></div>
+    <div class="card"><b>{{ con_padrino }}</b><span>Con padrino</span></div>
+    <div class="card"><b>{{ resumen.agradecido|default:0 }}</b><span>Completados</span></div>
+  </div>
+  <form method="get" class="org-filtros">
+    <input type="search" name="q" value="{{ request.GET.q }}" placeholder="Buscar niño, padrino, correo o regalo">
+    <select name="estado"><option value="">Todos los estados</option>{% for valor,nombre in estados %}<option value="{{ valor }}" {% if request.GET.estado == valor %}selected{% endif %}>{{ nombre }}</option>{% endfor %}</select>
+    <button class="btn btn-sm" type="submit">Buscar</button>
+  </form>
+  <div class="org-lista">
+  {% for n in ninos %}
+    <article class="card org-fila" id="nino-{{ n.pk }}">
+      <div class="org-persona">{% include "campana/_avatar.html" with n=n %}<div><h3>{{ n.nombre }}, {{ n.edad }} años</h3><span class="pill st-{{ n.estado }}">{{ n.get_estado_display }}</span></div></div>
+      <div class="org-datos"><p><b>Padrino</b><br>{% if n.padrino %}{{ n.padrino.get_full_name|default:n.padrino.email }}<br><a href="mailto:{{ n.padrino.email }}">{{ n.padrino.email }}</a>{% else %}<span class="muted">Sin asignar</span>{% endif %}</p><p><b>Pidió</b><br>{{ n.regalo_deseado|default:"—" }}<br><b>Entregará</b><br>{{ n.regalo_padrino|default:"Pendiente" }}</p></div>
+      <form method="post" action="{% url 'organizador_estado' n.pk %}" enctype="multipart/form-data" class="org-estado">{% csrf_token %}
+        <label>Estado<select name="estado">{% for valor,nombre in estados %}<option value="{{ valor }}" {% if n.estado == valor %}selected{% endif %}>{{ nombre }}</option>{% endfor %}</select></label>
+        <label>Nota interna<textarea name="nota_interna" rows="2">{{ n.nota_interna }}</textarea></label>
+        <label>Foto de entrega<input type="file" name="foto_entrega" accept="image/*"></label>
+        <div><button class="btn btn-sm" type="submit">Guardar</button> <a class="btn btn-ghost btn-sm" href="{% url 'organizador_nino' n.pk %}">Editar ficha</a>{% if n.estado == 'agradecido' %} <a href="{% url 'certificado' n.pk %}">Certificado</a>{% endif %}</div>
+      </form>
+    </article>
+  {% empty %}<div class="empty"><h2>No hay resultados</h2><p>Ajusta la búsqueda o agrega el primer niño.</p></div>{% endfor %}
+  </div>
+</div></section>
+{% endblock %}
+
